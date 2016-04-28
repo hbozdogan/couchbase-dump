@@ -1,14 +1,14 @@
 couchbase:
-  image: couchbase:3.0.3
+  image: couchbase:4.1.0
   ports:
     - "8091"
     - "8092"
 
 init-couchbase:
-  image: couchbase:3.0.3
+  image: couchbase:4.1.0
   links:
     - couchbase
   working_dir: /init
   volumes:
     - .:/init/
-  command: ./create_couchbase.sh
+  command: ./init_couchbase_image.sh

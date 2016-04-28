@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import base64
+import time
 import os
 import json
 import sys
@@ -41,7 +42,8 @@ class Connection(object):
             except urllib2.HTTPError as e:
                 content = e.read()
                 if e.code == 500:
-                    print 'got error', content
+                    print 'skipping error...', content
+                    time.sleep(1)
                     continue
                 elif E_ALREADY_EXISTS in content:
                     return 'already exists'  # OK
@@ -126,12 +128,12 @@ if __name__ == '__main__':
         buckets = get_buckets('%s/%s' % (basedir, COUCHBASE))
         for bucket, ddocs in buckets.items():
             conn.create_bucket(bucket)
-            print 'created', bucket
+            print 'created couchbase bucket', bucket
             for ddoc in ddocs:
                 conn.create_ddoc(bucket, ddoc)
-                print '  * created', ddoc.name
+                print '  * created document', ddoc.name
 
     if MEMCACHED in os.listdir(basedir):
         for bucket in os.listdir('%s/%s' % (basedir, MEMCACHED)):
             conn.create_memcache(bucket)
-            print 'created', bucket
+            print 'created memcached bucket', bucket
