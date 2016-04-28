@@ -61,8 +61,9 @@ def mkdir_p(path):
 
 def create_dirs(data, basedir='couchbase_buckets'):
     for bucket, ddocs in data.items():
-        if bucket.type == MEMCACHED:
-            dirname = '%s/memcached/%s' % (basedir, bucket.name)
+        if bucket.type == MEMCACHED or not ddocs:
+            subdir = 'memcached' if bucket.type == MEMCACHED else 'couchbase'
+            dirname = '%s/%s/%s' % (basedir, subdir, bucket.name)
             mkdir_p(dirname)
             continue
         # for couchbase buckets

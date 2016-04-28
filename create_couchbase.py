@@ -89,7 +89,7 @@ def get_buckets(basedir):
     for bucket in os.listdir(basedir):
         ddoc_dir = '%s/%s' % (basedir, bucket)
         ddocs = []
-        for ddoc in os.listdir(ddoc_dir):
+        for ddoc in [d for d in os.listdir(ddoc_dir) if d != IGNORE]:
             views_dir = '%s/%s' % (ddoc_dir, ddoc)
             views = {name.split('.')[0] for name in os.listdir(views_dir) if name != IGNORE}
             design = {'views': {}}
