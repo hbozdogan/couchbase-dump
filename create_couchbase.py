@@ -12,6 +12,7 @@ DDoc = namedtuple('DDoc', ('name', 'design'))
 
 MEMCACHED = 'memcached'
 COUCHBASE = 'couchbase'
+IGNORE = '.ignore'
 
 
 E_ALREADY_EXISTS = 'Bucket with given name already exists'
@@ -88,7 +89,7 @@ def get_buckets(basedir):
         ddocs = []
         for ddoc in os.listdir(ddoc_dir):
             views_dir = '%s/%s' % (ddoc_dir, ddoc)
-            views = {name.split('.')[0] for name in os.listdir(views_dir)}
+            views = {name.split('.')[0] for name in os.listdir(views_dir) if name != IGNORE}
             design = {'views': {}}
             for view in views:
                 design['views'][view] = {}

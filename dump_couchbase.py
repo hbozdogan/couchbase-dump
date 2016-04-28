@@ -10,6 +10,7 @@ DDoc = namedtuple('DDoc', ('name', 'views'))
 
 MEMCACHED = 'memcached'
 COUCHBASE = 'couchbase'
+IGNORE = '.ignore'
 
 
 class Connection(object):
@@ -38,11 +39,19 @@ class Connection(object):
         return res
 
 
+def touch_dir(path):
+    """Create an .ignore file in the directory so it's able to be stored on git."""
+    with open('%s/%s' % (path, IGNORE), 'w'):
+        pass
+
+
 def mkdir_p(path):
+    """mkdir -p."""
     import errno
     import os
     try:
         os.makedirs(path)
+        touch_dir(path)
     except OSError as exc:  # Python >2.5
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
