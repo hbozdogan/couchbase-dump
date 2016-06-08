@@ -4,7 +4,9 @@ import time
 import os
 import json
 import sys
-import urllib2, urllib
+import urllib2
+import urllib
+import httplib
 
 from collections import namedtuple
 
@@ -20,6 +22,7 @@ E_ALREADY_EXISTS = 'Bucket with given name already exists'
 
 
 class Connection(object):
+
     def __init__(self, user, password, api, rest_api):
         self.user = user
         self.password = password
@@ -33,23 +36,25 @@ class Connection(object):
         if content_type:
             request.add_header('Content-Type', content_type)
 
-        base64string = base64.encodestring('%s:%s' % (self.user, self.password)).replace('\n', '')
+        base64string = base64.encodestring('%s:%s' % (
+            self.user, self.password)).replace('\n', '')
         request.add_header('Authorization', 'Basic %s' % base64string)
         request.get_method = lambda: method
         for i in range(3):
             try:
                 return opener.open(request)
-            except urllib2.HTTPError as e:
+            except (urllib2.HTTPError) as e:
                 content = e.read()
-                if e.code == 500:
+                if E_ALREADY_EXISTS in content:
+                    return 'already exists'  # OK
+                else:
                     print 'skipping error...', content
                     time.sleep(1)
                     continue
-                elif E_ALREADY_EXISTS in content:
-                    return 'already exists'  # OK
-                else:
-                    print 'got error', content
-                    raise
+            except (httplib.BadStatusLine) as e:
+                print 'skipping error...', e
+                time.sleep(1)
+
         raise
 
     def post(self, path, data):
@@ -91,7 +96,8 @@ def get_buckets(basedir):
         ddocs = []
         for ddoc in [d for d in os.listdir(ddoc_dir) if d != IGNORE]:
             views_dir = '%s/%s' % (ddoc_dir, ddoc)
-            views = {name.split('.')[0] for name in os.listdir(views_dir) if name != IGNORE}
+            views = {name.split('.')[0] for name in os.listdir(
+                views_dir) if name != IGNORE}
             design = {'views': {}}
             for view in views:
                 design['views'][view] = {}
@@ -102,12 +108,12 @@ def get_buckets(basedir):
 
                 reduce_filename = '%s/%s.reduce.js' % (views_dir, view)
                 if os.path.isfile(reduce_filename):
-                    design['views'][view]['reduce'] = open(reduce_filename).read()
+                    design['views'][view]['reduce'] = open(
+                        reduce_filename).read()
             ddocs.append(DDoc(ddoc, design))
         buckets[bucket] = ddocs
 
     return buckets
-
 
 
 if __name__ == '__main__':

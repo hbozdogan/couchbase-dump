@@ -5,15 +5,15 @@
 #set -e
 #set -x
 
-HOST="couchbase"
-URL="$HOST:$COUCHBASE_PORT_8091_TCP_PORT"
-REST_URL="$HOST:$COUCHBASE_PORT_8092_TCP_PORT"
+URL="couchbase:8091"
+REST_URL="couchbase:8092"
 
 USER=Administrator
 PASS=12345678
 
-echo "Waiting for Couchbase to start..."
-until $(curl -sIfo /dev/null $URL); do sleep 1; done
+printf "Waiting for Couchbase to start"
+until $(curl -sIfo /dev/null $URL); do sleep 1; printf "."; done
+echo
 
 # the following line is a PATCH for couchbase:4.1.0 bug on OSX which causes the error:
 # ERROR: unable to setup services (400) Bad Request
