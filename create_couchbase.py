@@ -42,20 +42,19 @@ class Connection(object):
         request.get_method = lambda: method
         for i in range(3):
             try:
-                return opener.open(request)
-            except (urllib2.HTTPError) as e:
+                opener.open(request)
+            except urllib2.HTTPError as e:
                 content = e.read()
                 if E_ALREADY_EXISTS in content:
-                    return 'already exists'  # OK
+                    return  # view already exists - success!
                 else:
-                    print 'skipping error...', content
-                    time.sleep(1)
-                    continue
-            except (httplib.BadStatusLine) as e:
-                print 'skipping error...', e
-                time.sleep(1)
+                    time.sleep(1)  # retrying on view error
+            except httplib.BadStatusLine as e:
+                time.sleep(1)  # retrying on view error
+            else:
+                return  # view created - success!
 
-        raise
+        raise  # raise last error - failure :(
 
     def post(self, path, data):
         url = 'http://%s%s' % (self.api, path)
