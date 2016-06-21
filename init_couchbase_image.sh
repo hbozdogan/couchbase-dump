@@ -10,6 +10,8 @@ REST_URL="couchbase:8092"
 CLUSTER_RAMSIZE=1000
 MEMORY_QUOTA=500
 
+SCHEME_DIR=$1
+
 USER=Administrator
 PASS=12345678
 
@@ -28,4 +30,4 @@ couchbase-cli cluster-init \
     --cluster-username=$USER \
     --cluster-password=$PASS
 
-./create_couchbase.py $USER $PASS $URL $REST_URL couchbase_buckets
+./create_couchbase.py $USER $PASS $URL $REST_URL $SCHEME_DIR
