@@ -10,6 +10,7 @@ REST_URL="couchbase:8092"
 CLUSTER_RAMSIZE=1000
 MEMORY_QUOTA=500
 
+CURR_DIR=$(cd "$(dirname "$0")"; pwd)/
 SCHEME_DIR=$1
 
 USER=Administrator
@@ -30,4 +31,4 @@ couchbase-cli cluster-init \
     --cluster-username=$USER \
     --cluster-password=$PASS
 
-./create_couchbase.py $USER $PASS $URL $REST_URL $SCHEME_DIR
+$CURR_DIR/create_couchbase.py $USER $PASS $URL $REST_URL $SCHEME_DIR
