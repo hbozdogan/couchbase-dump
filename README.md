@@ -33,6 +33,8 @@ if you have just ran dump_couchbase.py as describe above, run the following to c
 remove the couchbase and data created by docker-compose
 `docker-compose stop; docker-compose rm -f`
 
+## tip
+its usually a lot simply to write the views using couchbase UI - and then dump it into a file with the dumpscript. This is especially true when your view uses the built-in reduce function.
 
 # Soon
 * Will create a python package so these scripts can be installable via `pip`
