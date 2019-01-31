@@ -74,11 +74,11 @@ def create_dirs(data, basedir='couchbase_buckets'):
                 if view.map:
                     filename = '%s/%s.map.js' % (dirname, view.name)
                     with open(filename, 'w') as f:
-                        f.write(view.map)
+                        f.write(view.map.encode("utf-8"))
                 if view.reduce:
                     filename = '%s/%s.reduce.js' % (dirname, view.name)
                     with open(filename, 'w') as f:
-                        f.write(view.reduce)
+                        f.write(view.reduce.encode("utf-8"))
 
 
 if __name__ == '__main__':
